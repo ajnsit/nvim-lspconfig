@@ -4,14 +4,19 @@ return {
   default_config = {
     cmd = { 'purescript-language-server', '--stdio' },
     filetypes = { 'purescript' },
-    root_dir = util.root_pattern(
-      'bower.json',
-      'flake.nix',
-      'psc-package.json',
-      'shell.nix',
-      'spago.dhall',
-      'spago.yaml'
-    ),
+    root_dir = function(path)
+      return (
+        path:match("(.-)/.spago/")
+        or util.root_pattern(
+          'bower.json',
+          'flake.nix',
+          'psc-package.json',
+          'shell.nix',
+          'spago.dhall',
+          'spago.yaml'
+           )(path)
+        )
+      end,
   },
   docs = {
     description = [[
@@ -23,7 +28,19 @@ The `purescript-language-server` can be added to your project and `$PATH` via
 * Nix under the `nodePackages` and `nodePackages_latest` package sets
 ]],
     default_config = {
-      root_dir = [[root_pattern('bower.json', 'flake.nix', 'psc-package.json', 'shell.nix', 'spago.dhall', 'spago.yaml'),]],
+      root_dir = [[ function(path)
+      return (
+        path:match("(.-)/.spago/")
+        or util.root_pattern(
+          'bower.json',
+          'flake.nix',
+          'psc-package.json',
+          'shell.nix',
+          'spago.dhall',
+          'spago.yaml'
+           )(path)
+        )
+      end]],
     },
   },
 }
